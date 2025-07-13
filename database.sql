@@ -1,0 +1,1 @@
+show table belajar_spring_restful_api;
