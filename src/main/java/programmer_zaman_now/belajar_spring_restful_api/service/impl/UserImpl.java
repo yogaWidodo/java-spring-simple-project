@@ -13,6 +13,7 @@ import programmer_zaman_now.belajar_spring_restful_api.model.request.RegisterUse
 import programmer_zaman_now.belajar_spring_restful_api.repository.UserRepository;
 import programmer_zaman_now.belajar_spring_restful_api.security.BCrypt;
 import programmer_zaman_now.belajar_spring_restful_api.service.UserService;
+import programmer_zaman_now.belajar_spring_restful_api.service.ValidationService;
 
 import java.util.Set;
 
@@ -24,16 +25,11 @@ public class UserImpl implements UserService {
 
 
     @Autowired
-    private Validator validator;
+    private ValidationService validationService;
 
     @Override
     public void register(RegisterUserRequest request) {
-        Set<ConstraintViolation<RegisterUserRequest>> constraintViolations = validator.validate(request);
-
-        if (!constraintViolations.isEmpty()){
-            throw new ConstraintViolationException(constraintViolations);
-        }
-
+        validationService.validate(request);
         if (userRepository.existsById(request.getUsername())){
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST,"Username already exists");
         }
