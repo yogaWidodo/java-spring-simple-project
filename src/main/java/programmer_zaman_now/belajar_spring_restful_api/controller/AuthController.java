@@ -1,10 +1,8 @@
 package programmer_zaman_now.belajar_spring_restful_api.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+import programmer_zaman_now.belajar_spring_restful_api.entity.User;
 import programmer_zaman_now.belajar_spring_restful_api.model.WebResponse;
 import programmer_zaman_now.belajar_spring_restful_api.model.request.LoginUserRequest;
 import programmer_zaman_now.belajar_spring_restful_api.model.response.TokenResponse;
@@ -22,10 +20,22 @@ public class AuthController {
             produces = "application/json",
             consumes = "application/json"
     )
-    public WebResponse<TokenResponse> login (@RequestBody LoginUserRequest request){
+    public WebResponse<TokenResponse> login(@RequestBody LoginUserRequest request) {
         TokenResponse tokenResponse = authService.login(request);
         return WebResponse.<TokenResponse>builder()
                 .Data(tokenResponse)
                 .build();
     }
+
+    @DeleteMapping(
+            path = "/logout",
+            produces = "application/json"
+    )
+    public WebResponse<String> logout(User user) {
+        authService.logout(user);
+        return WebResponse.<String>builder()
+                .Data("OK")
+                .build();
+    }
+
 }
