@@ -1,21 +1,19 @@
 package programmer_zaman_now.belajar_spring_restful_api.service.impl;
 
-import jakarta.transaction.Transactional;
-import jakarta.validation.ConstraintViolation;
-import jakarta.validation.ConstraintViolationException;
-import jakarta.validation.Validator;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 import programmer_zaman_now.belajar_spring_restful_api.entity.User;
 import programmer_zaman_now.belajar_spring_restful_api.model.request.RegisterUserRequest;
+import programmer_zaman_now.belajar_spring_restful_api.model.request.UpdateUserRequest;
+import programmer_zaman_now.belajar_spring_restful_api.model.response.UserResponse;
 import programmer_zaman_now.belajar_spring_restful_api.repository.UserRepository;
 import programmer_zaman_now.belajar_spring_restful_api.security.BCrypt;
 import programmer_zaman_now.belajar_spring_restful_api.service.UserService;
 import programmer_zaman_now.belajar_spring_restful_api.service.ValidationService;
 
-import java.util.Set;
 
 @Service
 public class UserImpl implements UserService {
@@ -40,7 +38,31 @@ public class UserImpl implements UserService {
         user.setName(request.getName());
 
         userRepository.save(user);
-
-
     }
+
+    @Override
+    public UserResponse update(User user, UpdateUserRequest request) {
+        validationService.validate(request);
+        if (request.getName()!= null) {
+            user.setName(request.getName());
+        }
+        if (request.getPassword() != null) {
+            user.setPassword(BCrypt.hashpw(request.getPassword(), BCrypt.gensalt()));
+        }
+        userRepository.save(user);
+        return UserResponse.builder()
+                .username(user.getUsername())
+                .name(user.getName())
+                .build();
+    }
+
+    @Override
+    public UserResponse getUser(User user) {
+        return UserResponse.builder()
+                .username(user.getUsername())
+                .name(user.getName())
+                .build();
+    }
+
+
 }
