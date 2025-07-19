@@ -18,6 +18,7 @@ public class UpdateContactRequest {
     @NotBlank
     private String id;
 
+
     @NotBlank
     @Size(max = 100)
     private String firstName;
